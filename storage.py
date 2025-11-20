@@ -114,3 +114,77 @@ class Storage:
         except Exception as e:
             print(f"Error loading accounts: {e}")
             return []
+
+    def export_accounts(self, accounts, format, filepath):
+        """
+        Exports accounts to a file in the specified format (json or csv).
+        WARNING: The exported file is NOT encrypted.
+        """
+        try:
+            if format.lower() == 'json':
+                with open(filepath, 'w') as f:
+                    json.dump(accounts, f, indent=4)
+            elif format.lower() == 'csv':
+                import csv
+                with open(filepath, 'w', newline='') as f:
+                    fieldnames = ['name', 'secret', 'digits', 'interval', 'algorithm']
+                    writer = csv.DictWriter(f, fieldnames=fieldnames)
+                    writer.writeheader()
+                    for acc in accounts:
+                        # Ensure we only write the fields we expect
+                        row = {k: acc.get(k) for k in fieldnames}
+                        writer.writerow(row)
+            else:
+                raise ValueError("Unsupported format")
+            return True
+        except Exception as e:
+            print(f"Export error: {e}")
+            return False
+
+    def import_accounts(self, filepath):
+        """
+        Imports accounts from a file (json or csv).
+        Automatically detects format.
+        Returns a list of account dicts.
+        """
+        try:
+            # Try JSON first
+            try:
+                with open(filepath, 'r') as f:
+                    accounts = json.load(f)
+                if isinstance(accounts, list):
+                    # Validate basic structure
+                    valid_accounts = []
+                    for acc in accounts:
+                        if 'name' in acc and 'secret' in acc:
+                             # Set defaults if missing
+                            acc.setdefault('digits', 6)
+                            acc.setdefault('interval', 30)
+                            acc.setdefault('algorithm', 'SHA1')
+                            valid_accounts.append(acc)
+                    return valid_accounts
+            except json.JSONDecodeError:
+                pass # Not JSON, try CSV
+
+            # Try CSV
+            import csv
+            accounts = []
+            with open(filepath, 'r') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    if 'name' in row and 'secret' in row:
+                        # Convert types
+                        try:
+                            row['digits'] = int(row.get('digits', 6))
+                            row['interval'] = int(row.get('interval', 30))
+                        except ValueError:
+                            row['digits'] = 6
+                            row['interval'] = 30
+                        
+                        row.setdefault('algorithm', 'SHA1')
+                        accounts.append(row)
+            return accounts
+
+        except Exception as e:
+            print(f"Import error: {e}")
+            return []

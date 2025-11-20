@@ -55,6 +55,8 @@ class MainListScreen:
         
         # Menu items
         ctk.CTkButton(menu, text="Change Password", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.app.show_change_password_dialog()]).pack(pady=2)
+        ctk.CTkButton(menu, text="Import Accounts", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.import_accounts()]).pack(pady=2)
+        ctk.CTkButton(menu, text="Export Accounts", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.export_accounts()]).pack(pady=2)
         
         # Close menu when clicking outside or window moves
         def close_menu(event=None):
@@ -93,6 +95,16 @@ class MainListScreen:
             widget.destroy()
 
         self.account_frames = []
+        
+        # Empty State
+        if not self.app.accounts:
+            frame = ctk.CTkFrame(self.scroll_frame, fg_color="transparent")
+            frame.pack(expand=True, pady=50)
+            
+            ctk.CTkLabel(frame, text="No accounts yet", font=("Roboto", 16), text_color=COLOR_TEXT).pack(pady=10)
+            ctk.CTkButton(frame, text="Import Accounts", command=self.import_accounts).pack(pady=10)
+            return
+
         callbacks = {
             'delete': self.delete_account,
             'move_up': self.move_up,
@@ -105,6 +117,38 @@ class MainListScreen:
             frame = AccountFrame(self.scroll_frame, acc, self.app.auth_engine, callbacks)
             frame.pack(fill="x", pady=5)
             self.account_frames.append(frame)
+
+    def import_accounts(self):
+        from tkinter import filedialog, messagebox
+        filepath = filedialog.askopenfilename(
+            title="Import Accounts",
+            filetypes=[("JSON/CSV Files", "*.json *.csv"), ("All Files", "*.*")]
+        )
+        
+        if filepath:
+            new_accounts = self.app.storage.import_accounts(filepath)
+            if new_accounts:
+                # Merge accounts (append)
+                count = 0
+                for acc in new_accounts:
+                    # Simple duplicate check by secret
+                    if not any(a['secret'] == acc['secret'] for a in self.app.accounts):
+                        self.app.accounts.append(acc)
+                        count += 1
+                
+                if count > 0:
+                    self.app.storage.save_accounts(self.app.accounts, self.app.password)
+                    self.refresh_account_list()
+                    messagebox.showinfo("Success", f"Imported {count} accounts.")
+                else:
+                    messagebox.showinfo("Info", "No new accounts found (duplicates skipped).")
+            else:
+                messagebox.showerror("Error", "Failed to import accounts. Check file format.")
+
+    def export_accounts(self):
+        from dialogs.export_dialog import ExportDialog
+        dialog = ExportDialog(self.container, self.app)
+        dialog.show()
 
     def delete_account(self, account_frame):
         try:
