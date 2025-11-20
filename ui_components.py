@@ -5,10 +5,7 @@ import pyperclip
 from PIL import Image, ImageDraw
 import os
 
-# Colors
-COLOR_TEXT = "#FFFDD0" # Light Cream
-COLOR_ACCENT = "#1f6aa5" # Default Blue
-COLOR_BG_CARD = "#2b2b2b" # Darker card background
+from constants import COLOR_TEXT, COLOR_ACCENT, COLOR_BG_CARD
 
 def create_trashcan_icon(size=23):
     """Load trashcan icon from assets folder"""
