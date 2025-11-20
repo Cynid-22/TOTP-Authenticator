@@ -263,9 +263,19 @@ class App(ctk.CTk):
         entry_repeat = ctk.CTkEntry(frame, width=300, show="*")
         entry_repeat.pack(pady=(0, 15))
         
-        # Error label
-        lbl_error = ctk.CTkLabel(frame, text="", text_color="red")
-        lbl_error.pack(pady=5)
+        # Message label (for errors and success)
+        lbl_message = ctk.CTkLabel(frame, text="", text_color="red")
+        lbl_message.pack(pady=5)
+        
+        # Buttons frame and buttons (created before function so we can modify them)
+        btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
+        btn_frame.pack(pady=10)
+        
+        btn_change = ctk.CTkButton(btn_frame, text="Change Password", width=140, height=36)
+        btn_change.pack(side="left", padx=5)
+        
+        btn_cancel = ctk.CTkButton(btn_frame, text="Cancel", width=140, height=36, fg_color="transparent", border_width=1, command=dialog.destroy)
+        btn_cancel.pack(side="left", padx=5)
         
         def change_password():
             current = entry_current.get()
@@ -274,16 +284,16 @@ class App(ctk.CTk):
             
             # Validate current password
             if not self.storage.unlock(current):
-                lbl_error.configure(text="Current password is incorrect")
+                lbl_message.configure(text="Current password is incorrect", text_color="red")
                 return
             
             # Validate new password
             if not new:
-                lbl_error.configure(text="New password cannot be empty")
+                lbl_message.configure(text="New password cannot be empty", text_color="red")
                 return
             
             if new != repeat:
-                lbl_error.configure(text="New passwords do not match")
+                lbl_message.configure(text="New passwords do not match", text_color="red")
                 return
             
             # Change password
@@ -298,25 +308,26 @@ class App(ctk.CTk):
                 # Update current password
                 self.password = new
                 
-                dialog.destroy()
+                # Show success state inline
+                # Disable all input fields
+                entry_current.configure(state="disabled")
+                entry_new.configure(state="disabled")
+                entry_repeat.configure(state="disabled")
                 
                 # Show success message
-                success_msg = ctk.CTkToplevel(self)
-                success_msg.title("Success")
-                success_msg.geometry("300x150")
-                success_msg.attributes("-topmost", True)
-                ctk.CTkLabel(success_msg, text="Password changed successfully!", text_color=COLOR_TEXT).pack(pady=30)
-                ctk.CTkButton(success_msg, text="OK", command=success_msg.destroy).pack()
+                lbl_message.configure(text="Password changed successfully!", text_color="#00ff00")
+                
+                # Grey out cancel button
+                btn_cancel.configure(state="disabled", fg_color="gray40", border_color="gray40")
+                
+                # Change the "Change Password" button to "OK" and make it close the dialog
+                btn_change.configure(text="OK", command=dialog.destroy)
                 
             except Exception as e:
-                lbl_error.configure(text=f"Error: {str(e)}")
+                lbl_message.configure(text=f"Error: {str(e)}", text_color="red")
         
-        # Buttons
-        btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
-        btn_frame.pack(pady=10)
-        
-        ctk.CTkButton(btn_frame, text="Change Password", width=140, height=36, command=change_password).pack(side="left", padx=5)
-        ctk.CTkButton(btn_frame, text="Cancel", width=140, height=36, fg_color="transparent", border_width=1, command=dialog.destroy).pack(side="left", padx=5)
+        # Configure the change button command
+        btn_change.configure(command=change_password)
 
     def toggle_edit_mode(self):
         self.is_edit_mode = not self.is_edit_mode
