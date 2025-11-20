@@ -132,13 +132,9 @@ class AccountFrame(ctk.CTkFrame):
         self.btn_copy.grid(row=0, column=3, rowspan=2, padx=10)
         
         # --- Edit Mode Widgets (Hidden by default) ---
-        # Drag Handle
-        self.lbl_drag_handle = ctk.CTkLabel(self, text=":::", font=("Roboto", 20, "bold"), text_color="#666666", cursor="hand2")
-        
-        # Bind Drag Events
-        self.lbl_drag_handle.bind("<Button-1>", lambda e: self.callbacks['drag_start'](e, self))
-        self.lbl_drag_handle.bind("<B1-Motion>", lambda e: self.callbacks['drag_motion'](e, self))
-        self.lbl_drag_handle.bind("<ButtonRelease-1>", lambda e: self.callbacks['drag_end'](e, self))
+        # Up/Down Arrow Buttons
+        self.btn_up = ctk.CTkButton(self, text="▲", width=30, height=30, fg_color="transparent", hover_color="#1f6aa5", font=("Roboto", 16), command=lambda: self.callbacks['move_up'](self))
+        self.btn_down = ctk.CTkButton(self, text="▼", width=30, height=30, fg_color="transparent", hover_color="#1f6aa5", font=("Roboto", 16), command=lambda: self.callbacks['move_down'](self))
 
         # Trashcan Icon
         self.trash_icon = create_trashcan_icon()
@@ -195,14 +191,15 @@ class AccountFrame(ctk.CTkFrame):
             self.label_code.grid_remove()
             self.progress.grid_remove()
             
-            # Edit Layout: [Trash] [Settings] [Name (Expanded)] [Drag]
+            # Edit Layout: [Trash] [Settings] [Name (Expanded)] [Up] [Down]
             self.btn_delete.grid(row=0, column=0, padx=5)
             self.btn_settings.grid(row=0, column=1, padx=5)
             
             self.label_name.configure(font=("Roboto", 28, "bold"))
             self.label_name.grid(row=0, column=2, sticky="ew", pady=10)
             
-            self.lbl_drag_handle.grid(row=0, column=3, padx=10)
+            self.btn_up.grid(row=0, column=3, padx=2)
+            self.btn_down.grid(row=0, column=4, padx=5)
             
             # Adjust column weights for edit mode
             self.grid_columnconfigure(0, weight=0)
@@ -214,7 +211,8 @@ class AccountFrame(ctk.CTkFrame):
         else:
             self.btn_delete.grid_remove()
             self.btn_settings.grid_remove()
-            self.lbl_drag_handle.grid_remove()
+            self.btn_up.grid_remove()
+            self.btn_down.grid_remove()
             
             self.label_name.configure(font=("Roboto", 14))
             # Restore original layout
@@ -234,7 +232,7 @@ class AccountFrame(ctk.CTkFrame):
         # Create dialog
         dialog = ctk.CTkToplevel(self)
         dialog.title(f"Settings - {self.name}")
-        dialog.geometry("350x250")
+        dialog.geometry("350x320")
         dialog.resizable(False, False)
         dialog.attributes("-topmost", True)
         dialog.grab_set()
@@ -242,7 +240,7 @@ class AccountFrame(ctk.CTkFrame):
         # Center dialog
         dialog.update_idletasks()
         x = (dialog.winfo_screenwidth() // 2) - (350 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (250 // 2)
+        y = (dialog.winfo_screenheight() // 2) - (320 // 2)
         dialog.geometry(f"+{x}+{y}")
         
         frame = ctk.CTkFrame(dialog, fg_color="transparent")
@@ -256,7 +254,7 @@ class AccountFrame(ctk.CTkFrame):
         ctk.CTkLabel(frame, text="(1-9)", text_color="#888888", font=("Roboto", 10)).grid(row=0, column=2, sticky="w", padx=5, pady=10)
         
         # Period
-        ctk.CTkLabel(frame, text="Period (s):", text_color=COLOR_TEXT).grid(row=1, column=0, sticky="w", pady=10)
+        ctk.CTkLabel(frame, text="Period:", text_color=COLOR_TEXT).grid(row=1, column=0, sticky="w", pady=10)
         entry_period = ctk.CTkEntry(frame, width=80)
         entry_period.insert(0, str(self.interval))
         entry_period.grid(row=1, column=1, sticky="w", pady=10)

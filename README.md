@@ -20,7 +20,7 @@ A secure, modern TOTP (Time-based One-Time Password) authenticator built with Py
 - **Modern Dark Theme**: Clean, modern interface with smooth animations
 - **Circular Progress Timer**: Visual countdown for code expiration
 - **Smart Code Formatting**: Auto-formatted code display based on digit count
-- **Drag & Drop Reordering**: Reorder accounts by dragging
+- **Arrow Button Reordering**: Use ▲▼ buttons to reorder accounts
 - **Edit Mode**: Toggle edit mode to delete or reorder accounts
 - **One-Click Copy**: Click any code to copy to clipboard
 - **Custom Icons**: Application icon and asset support
@@ -62,7 +62,7 @@ Enter your master password to unlock the app
 - **Copy Code**: Click on any TOTP code to copy it
 - **Edit Account Settings**: Click the ⚙️ icon on any account
 - **Delete Account**: Enable edit mode (≡ menu → Edit) and click the 🗑️ icon
-- **Reorder Accounts**: Enable edit mode and drag accounts to reorder
+- **Reorder Accounts**: Enable edit mode and use ▲▼ arrow buttons to move accounts up or down
 - **Change Password**: Click ≡ menu → Change Password
 
 ## Security Notes

@@ -175,7 +175,7 @@ class App(ctk.CTk):
         self.entry_digits.grid(row=0, column=1, sticky="w", pady=5)
         ctk.CTkLabel(self.frame_advanced, text="(1-9)", text_color="#888888", font=("Roboto", 10)).grid(row=0, column=2, sticky="w", padx=5, pady=5)
         
-        ctk.CTkLabel(self.frame_advanced, text="Period (s):", text_color=COLOR_TEXT).grid(row=1, column=0, sticky="w", padx=(0, 10), pady=5)
+        ctk.CTkLabel(self.frame_advanced, text="Period:", text_color=COLOR_TEXT).grid(row=1, column=0, sticky="w", padx=(0, 10), pady=5)
         self.entry_period = ctk.CTkEntry(self.frame_advanced, width=60)
         self.entry_period.insert(0, "30")
         self.entry_period.grid(row=1, column=1, sticky="w", pady=5)
@@ -416,68 +416,39 @@ class App(ctk.CTk):
         except ValueError:
             print("Error: Account frame not found for deletion")
 
-    # --- Drag and Drop Logic ---
+    # --- Move Up/Down Logic ---
 
-    def drag_start(self, event, frame):
-        self.drag_data = {"frame": frame, "start_y": event.y_root, "index": self.account_frames.index(frame)}
-        frame.configure(fg_color="#444444") # Visual feedback
-        
-        # Create Ghost Window
-        self.drag_window = ctk.CTkToplevel(self)
-        self.drag_window.overrideredirect(True)
-        self.drag_window.attributes("-alpha", 0.8)
-        self.drag_window.attributes("-topmost", True)
-        
-        # Position it near cursor
-        self.drag_window.geometry(f"+{event.x_root + 15}+{event.y_root + 10}")
-        
-        # Add Label to Ghost
-        lbl = ctk.CTkLabel(self.drag_window, text=frame.name, font=("Roboto", 16, "bold"), text_color=COLOR_TEXT, fg_color="#2b2b2b", corner_radius=5)
-        lbl.pack(padx=10, pady=5)
+    def move_up(self, account_frame):
+        try:
+            index = self.account_frames.index(account_frame)
+            if index > 0:
+                # Swap with previous item
+                self.accounts[index], self.accounts[index - 1] = self.accounts[index - 1], self.accounts[index]
+                self.storage.save_accounts(self.accounts, self.password)
+                self.refresh_account_list()
+                
+                # Restore edit mode
+                if self.is_edit_mode:
+                    for f in self.account_frames:
+                        f.set_edit_mode(True)
+        except ValueError:
+            print("Error: Account frame not found")
 
-    def drag_motion(self, event, frame):
-        if hasattr(self, 'drag_window') and self.drag_window:
-            self.drag_window.geometry(f"+{event.x_root + 15}+{event.y_root + 10}")
-
-    def drag_end(self, event, frame):
-        frame.configure(fg_color="#2b2b2b") # Reset color
-        
-        # Destroy Ghost Window
-        if hasattr(self, 'drag_window') and self.drag_window:
-            self.drag_window.destroy()
-            self.drag_window = None
-        
-        drop_y = event.y_root
-        # Find target index based on y coordinate
-        target_index = -1
-        
-        # Simple hit testing
-        for i, f in enumerate(self.account_frames):
-            f_y = f.winfo_rooty()
-            f_height = f.winfo_height()
-            if f_y <= drop_y <= f_y + f_height:
-                target_index = i
-                break
-        
-        if target_index == -1:
-            # Check if dropped at very bottom or top
-            if drop_y < self.account_frames[0].winfo_rooty():
-                target_index = 0
-            elif drop_y > self.account_frames[-1].winfo_rooty() + self.account_frames[-1].winfo_height():
-                target_index = len(self.account_frames) - 1
-
-        if target_index != -1 and target_index != self.drag_data["index"]:
-            # Reorder
-            item = self.accounts.pop(self.drag_data["index"])
-            self.accounts.insert(target_index, item)
-            self.storage.save_accounts(self.accounts, self.password)
-            
-            self.refresh_account_list()
-            # Restore edit mode
-            self.btn_edit.configure(text="Done")
-            self.is_edit_mode = True
-            for f in self.account_frames:
-                f.set_edit_mode(True)
+    def move_down(self, account_frame):
+        try:
+            index = self.account_frames.index(account_frame)
+            if index < len(self.account_frames) - 1:
+                # Swap with next item
+                self.accounts[index], self.accounts[index + 1] = self.accounts[index + 1], self.accounts[index]
+                self.storage.save_accounts(self.accounts, self.password)
+                self.refresh_account_list()
+                
+                # Restore edit mode
+                if self.is_edit_mode:
+                    for f in self.account_frames:
+                        f.set_edit_mode(True)
+        except ValueError:
+            print("Error: Account frame not found")
 
     def update_account_settings(self, account_frame, digits, period, algorithm):
         """Update TOTP settings for an existing account"""
@@ -505,9 +476,8 @@ class App(ctk.CTk):
         self.account_frames = []
         callbacks = {
             'delete': self.delete_account,
-            'drag_start': self.drag_start,
-            'drag_motion': self.drag_motion,
-            'drag_end': self.drag_end,
+            'move_up': self.move_up,
+            'move_down': self.move_down,
             'update_settings': self.update_account_settings
         }
         
