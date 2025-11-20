@@ -1,43 +1,72 @@
 # TOTP Authenticator
 
-A simple, secure, and modern TOTP (Time-based One-Time Password) authenticator for Windows, built with Python and CustomTkinter.
+A secure, modern TOTP (Time-based One-Time Password) authenticator built with Python and CustomTkinter.
 
 ## Features
-- **Secure Storage**: Accounts are encrypted using `cryptography` (Fernet).
-- **Modern UI**: Dark mode interface using `customtkinter`.
-- **Standard TOTP**: Compatible with Google Authenticator (SHA1, 30s interval).
-- **Clipboard Support**: One-click copy for codes.
+
+### Security
+- **AES-256-GCM Encryption**: All accounts are encrypted using industry-standard AES-256-GCM
+- **Argon2id Key Derivation**: Password-based encryption key derivation with OWASP-recommended parameters
+- **Master Password**: Single password protects all your accounts
+- **Password Change**: Change your master password without losing accounts
+
+### TOTP Configuration
+- **Custom Digits**: Support for 1 to 9 digit TOTP codes
+- **Custom Period**: Configurable time periods (default 30s, range 1-120s)
+- **Multiple Algorithms**: SHA1, SHA256, and SHA512 support
+- **Per-Account Settings**: Configure TOTP parameters individually for each account
+
+### User Interface
+- **Modern Dark Theme**: Clean, modern interface with smooth animations
+- **Circular Progress Timer**: Visual countdown for code expiration
+- **Smart Code Formatting**: Auto-formatted code display based on digit count
+- **Drag & Drop Reordering**: Reorder accounts by dragging
+- **Edit Mode**: Toggle edit mode to delete or reorder accounts
+- **One-Click Copy**: Click any code to copy to clipboard
+- **Custom Icons**: Application icon and asset support
 
 ## Installation
 
-1.  **Prerequisites**: Ensure Python is installed.
-2.  **Install Dependencies**:
-    ```bash
-    pip install customtkinter pyotp cryptography pyperclip
-    ```
+### Prerequisites
+- Python 3.7 or higher
+
+### Install Dependencies
+```bash
+pip install customtkinter pyotp cryptography pyperclip pillow
+```
 
 ## Usage
 
 ### Running the App
-Run the `main.py` script:
 ```bash
 python main.py
 ```
 
-### First Run (Setup)
-1.  You will be prompted to **Set a Password**.
-2.  This password will be used to encrypt your accounts. **Do not forget it!**
+### First Run
+1. You'll be prompted to create a master password
+2. This password encrypts all your accounts - **don't forget it!**
 
-### Subsequent Runs (Login)
-1.  Enter your password to unlock the application.
-2.  If you enter the wrong password, the app will not open.
+### Login
+Enter your master password to unlock the app
 
-### Adding an Account
-1.  Click the **+** button.
-2.  Enter a name (e.g., "Google", "GitHub").
-3.  Enter the **Secret Key** provided by the service (e.g., `JBSWY3DPEHPK3PXP`).
-    *Note: If the service provides a QR code, look for a "setup key" or "manual entry" option to get the text code.*
+### Adding Accounts
+1. Click the **+** button
+2. Enter the account name (e.g., "Google", "GitHub")
+3. Enter the secret key from the service
+4. **(Optional)** Click "Advanced Options" to configure:
+   - Number of digits (1 to 9)
+   - Time period (in seconds, 1 to 120)
+   - Hash algorithm (SHA1, SHA256, SHA512)
 
-## Troubleshooting
-- **"Module not found"**: Run the installation command again.
-- **"Invalid Secret"**: Ensure you copied the secret key correctly. It should be a Base32 string (letters A-Z and numbers 2-7).
+### Managing Accounts
+- **Copy Code**: Click on any TOTP code to copy it
+- **Edit Account Settings**: Click the ⚙️ icon on any account
+- **Delete Account**: Enable edit mode (≡ menu → Edit) and click the 🗑️ icon
+- **Reorder Accounts**: Enable edit mode and drag accounts to reorder
+- **Change Password**: Click ≡ menu → Change Password
+
+## Security Notes
+- Account data is encrypted using AES-256-GCM with Argon2id key derivation
+- The master password is never stored - only used to derive encryption keys
+- Each save operation generates a new salt and nonce for security
+- If you forget your master password, your accounts cannot be recovered
