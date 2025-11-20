@@ -24,6 +24,7 @@ A secure, modern TOTP (Time-based One-Time Password) authenticator built with Py
 - **Edit Mode**: Toggle edit mode to delete or reorder accounts
 - **One-Click Copy**: Click any code to copy to clipboard
 - **Custom Icons**: Application icon and asset support
+- **Import/Export**: Backup and restore accounts via JSON or CSV
 
 ## Installation
 
@@ -64,9 +65,11 @@ Enter your master password to unlock the app
 - **Delete Account**: Enable edit mode (≡ menu → Edit) and click the 🗑️ icon
 - **Reorder Accounts**: Enable edit mode and use ▲▼ arrow buttons to move accounts up or down
 - **Change Password**: Click ≡ menu → Change Password
+- **Import/Export**: Click ≡ menu → Import/Export Accounts to backup or restore your data (JSON/CSV supported)
 
 ## Security Notes
 - Account data is encrypted using AES-256-GCM with Argon2id key derivation
 - The master password is never stored - only used to derive encryption keys
 - Each save operation generates a new salt and nonce for security
 - If you forget your master password, your accounts cannot be recovered
+- **Export Warning**: Exported files (JSON/CSV) are **NOT encrypted**. Store them securely or delete them after use.
