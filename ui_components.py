@@ -192,8 +192,13 @@ class AccountFrame(ctk.CTkFrame):
             self.btn_delete.grid(row=0, column=0, padx=5)
             self.btn_settings.grid(row=0, column=1, padx=5)
             
-            self.label_name.configure(font=("Roboto", 28, "bold"))
-            self.label_name.grid(row=0, column=2, sticky="ew", pady=10)
+            # Truncate name if too long
+            display_name = self.name
+            if len(display_name) > 15:
+                display_name = display_name[:12] + "..."
+            
+            self.label_name.configure(text=display_name, font=("Roboto", 20, "bold"), anchor="w")
+            self.label_name.grid(row=0, column=2, sticky="ew", pady=10, padx=(5, 0))
             
             self.btn_up.grid(row=0, column=3, padx=2)
             self.btn_down.grid(row=0, column=4, padx=5)
@@ -211,9 +216,9 @@ class AccountFrame(ctk.CTkFrame):
             self.btn_up.grid_remove()
             self.btn_down.grid_remove()
             
-            self.label_name.configure(font=("Roboto", 14))
+            self.label_name.configure(text=self.name, font=("Roboto", 14), anchor="center")
             # Restore original layout
-            self.label_name.grid(row=0, column=0, columnspan=1, sticky="w", pady=(10, 0))
+            self.label_name.grid(row=0, column=0, columnspan=1, sticky="w", pady=(10, 0), padx=15)
             
             self.label_code.grid()
             self.progress.grid()
