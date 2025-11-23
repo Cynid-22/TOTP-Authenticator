@@ -1,6 +1,8 @@
 import customtkinter as ctk
+from tkinter import filedialog, messagebox
 from core.constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
 from ui.components import AccountFrame
+from ui.dialogs.export_dialog import ExportDialog
 
 class MainListScreen:
     def __init__(self, container, app):
@@ -119,7 +121,6 @@ class MainListScreen:
             self.account_frames.append(frame)
 
     def import_accounts(self):
-        from tkinter import filedialog, messagebox
         filepath = filedialog.askopenfilename(
             title="Import Accounts",
             filetypes=[("JSON/CSV Files", "*.json *.csv"), ("All Files", "*.*")]
@@ -146,7 +147,6 @@ class MainListScreen:
                 messagebox.showerror("Error", "Failed to import accounts. Check file format.")
 
     def export_accounts(self):
-        from ui.dialogs.export_dialog import ExportDialog
         dialog = ExportDialog(self.container, self.app)
         dialog.show()
 
@@ -154,13 +154,7 @@ class MainListScreen:
         try:
             index = self.account_frames.index(account_frame)
             self.app.accounts.pop(index)
-            self.app.storage.save_accounts(self.app.accounts, self.app.password)
-            self.refresh_account_list()
-            
-            # Restore edit mode state for the new frames
-            if self.is_edit_mode:
-                for frame in self.account_frames:
-                    frame.set_edit_mode(True)
+            self.save_and_refresh()
         except ValueError:
             print("Error: Account frame not found for deletion")
 
@@ -170,13 +164,7 @@ class MainListScreen:
             if index > 0:
                 # Swap with previous item
                 self.app.accounts[index], self.app.accounts[index - 1] = self.app.accounts[index - 1], self.app.accounts[index]
-                self.app.storage.save_accounts(self.app.accounts, self.app.password)
-                self.refresh_account_list()
-                
-                # Restore edit mode
-                if self.is_edit_mode:
-                    for f in self.account_frames:
-                        f.set_edit_mode(True)
+                self.save_and_refresh()
         except ValueError:
             print("Error: Account frame not found")
 
@@ -186,15 +174,19 @@ class MainListScreen:
             if index < len(self.account_frames) - 1:
                 # Swap with next item
                 self.app.accounts[index], self.app.accounts[index + 1] = self.app.accounts[index + 1], self.app.accounts[index]
-                self.app.storage.save_accounts(self.app.accounts, self.app.password)
-                self.refresh_account_list()
-                
-                # Restore edit mode
-                if self.is_edit_mode:
-                    for f in self.account_frames:
-                        f.set_edit_mode(True)
+                self.save_and_refresh()
         except ValueError:
             print("Error: Account frame not found")
+
+    def save_and_refresh(self):
+        """Helper to save accounts, refresh list, and restore edit mode"""
+        self.app.storage.save_accounts(self.app.accounts, self.app.password)
+        self.refresh_account_list()
+        
+        # Restore edit mode state for the new frames
+        if self.is_edit_mode:
+            for frame in self.account_frames:
+                frame.set_edit_mode(True)
 
     def update_account_settings(self, account_frame, digits, period, algorithm):
         """Update TOTP settings for an existing account"""

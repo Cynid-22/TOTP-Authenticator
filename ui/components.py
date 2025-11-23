@@ -7,14 +7,12 @@ import os
 
 from core.constants import COLOR_TEXT, COLOR_ACCENT, COLOR_BG_CARD
 
+from core.utils import get_asset_path
+
 def create_trashcan_icon(size=23):
     """Load trashcan icon from assets folder"""
     try:
-        # Get path to assets folder
-        # Need to go up one level from ui/ to root, then to assets
-        # ui/components.py -> ui/ -> root -> assets
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        icon_path = os.path.join(base_dir, "assets", "trash.ico")
+        icon_path = get_asset_path("trash.ico")
         
         if os.path.exists(icon_path):
             img = Image.open(icon_path)
@@ -28,9 +26,7 @@ def create_trashcan_icon(size=23):
 def create_settings_icon(size=23):
     """Load settings icon from assets folder and recolor to light cream"""
     try:
-        # Get path to assets folder
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        icon_path = os.path.join(base_dir, "assets", "setting.ico")
+        icon_path = get_asset_path("setting.ico")
         
         if os.path.exists(icon_path):
             img = Image.open(icon_path).convert("RGBA")

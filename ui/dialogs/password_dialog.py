@@ -1,29 +1,14 @@
 import customtkinter as ctk
-from core.constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
+from core.constants import COLOR_TEXT
+from ui.dialogs.base_dialog import BaseDialog
 
-class ChangePasswordDialog:
+class ChangePasswordDialog(BaseDialog):
     def __init__(self, parent, app):
-        self.parent = parent
+        super().__init__(parent, "Change Password", width=350, height=450)
         self.app = app
 
-    def show(self):
-        # Create dialog
-        dialog = ctk.CTkToplevel(self.parent)
-        # Delay setting icon to prevent override
-        dialog.after(200, dialog.iconbitmap, "assets/icon.ico")
-        dialog.title("Change Password")
-        dialog.geometry("350x450")
-        dialog.resizable(False, False)
-        dialog.attributes("-topmost", True)
-        dialog.grab_set()
-        
-        # Center dialog
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (350 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (450 // 2)
-        dialog.geometry(f"+{x}+{y}")
-        
-        frame = ctk.CTkFrame(dialog, fg_color="transparent")
+    def setup_ui(self):
+        frame = ctk.CTkFrame(self.dialog, fg_color="transparent")
         frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         ctk.CTkLabel(frame, text="Change Master Password", font=("Roboto", 16, "bold"), text_color=COLOR_TEXT).pack(pady=(0, 20))
@@ -54,7 +39,7 @@ class ChangePasswordDialog:
         btn_change = ctk.CTkButton(btn_frame, text="Change Password", width=140, height=36)
         btn_change.pack(side="left", padx=5)
         
-        btn_cancel = ctk.CTkButton(btn_frame, text="Cancel", width=140, height=36, fg_color="transparent", border_width=1, command=dialog.destroy)
+        btn_cancel = ctk.CTkButton(btn_frame, text="Cancel", width=140, height=36, fg_color="transparent", border_width=1, command=self.destroy)
         btn_cancel.pack(side="left", padx=5)
         
         def change_password():
@@ -101,7 +86,7 @@ class ChangePasswordDialog:
                 btn_cancel.configure(state="disabled", fg_color="gray40", border_color="gray40")
                 
                 # Change the "Change Password" button to "OK" and make it close the dialog
-                btn_change.configure(text="OK", command=dialog.destroy)
+                btn_change.configure(text="OK", command=self.destroy)
                 
             except Exception as e:
                 lbl_message.configure(text=f"Error: {str(e)}", text_color="red")
