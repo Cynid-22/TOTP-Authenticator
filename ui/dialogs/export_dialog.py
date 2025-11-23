@@ -51,6 +51,7 @@ class ExportDialog(BaseDialog):
                 
             filepath = filedialog.asksaveasfilename(
                 title="Export Accounts",
+                initialfile="TOTP_Export_DO_NOT_SHARE",
                 defaultextension=def_ext,
                 filetypes=filetypes,
                 parent=self.dialog
