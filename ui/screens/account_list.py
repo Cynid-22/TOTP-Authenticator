@@ -57,6 +57,7 @@ class MainListScreen:
         
         # Menu items
         ctk.CTkButton(menu, text="Change Password", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.app.show_change_password_dialog()]).pack(pady=2)
+        ctk.CTkButton(menu, text="Auto-Lock Settings", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.show_auto_lock_settings()]).pack(pady=2)
         ctk.CTkButton(menu, text="Import Accounts", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.import_accounts()]).pack(pady=2)
         ctk.CTkButton(menu, text="Export Accounts", width=200, height=30, fg_color=COLOR_BG_CARD, hover_color=COLOR_ACCENT, text_color=COLOR_TEXT, command=lambda: [menu.destroy(), self.export_accounts()]).pack(pady=2)
         
@@ -150,6 +151,11 @@ class MainListScreen:
 
     def export_accounts(self):
         dialog = ExportDialog(self.container, self.app)
+        dialog.show()
+    
+    def show_auto_lock_settings(self):
+        from ui.dialogs.auto_lock_dialog import AutoLockDialog
+        dialog = AutoLockDialog(self.container, self.app.config)
         dialog.show()
 
     def delete_account(self, account_frame):

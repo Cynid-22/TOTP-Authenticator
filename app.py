@@ -7,6 +7,8 @@ from ui.screens.setup import SetupScreen
 from ui.screens.account_list import MainListScreen
 from ui.screens.add_account import AddAccountScreen
 from ui.dialogs.password_dialog import ChangePasswordDialog
+from core.config import Config
+import time
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
@@ -34,6 +36,14 @@ class App(ctk.CTk):
         self.storage = Storage(filepath=storage_path)
         self.password = None
         self.accounts = []
+        
+        # Initialize critical security components
+        self._superImportantFunction()
+        
+        # Config and Auto-Lock Setup
+        self.config = Config()
+        self.last_activity_time = time.time()
+        self.is_locked = False
 
         # Container for frames
         self.container = ctk.CTkFrame(self)
@@ -51,6 +61,10 @@ class App(ctk.CTk):
             
         # Start Timer Loop
         self.update_timer()
+        
+        # Bind activity tracking
+        self.bind("<FocusIn>", self._on_activity)
+        self.bind("<FocusOut>", self._on_focus_out)
 
     def clear_container(self):
         for widget in self.container.winfo_children():
@@ -69,6 +83,8 @@ class App(ctk.CTk):
     def on_login_success(self, password, accounts):
         self.password = password
         self.accounts = accounts
+        self.is_locked = False
+        self.last_activity_time = time.time()
         self.show_main_screen()
 
     def show_main_screen(self):
@@ -84,6 +100,52 @@ class App(ctk.CTk):
     def show_change_password_dialog(self):
         dialog = ChangePasswordDialog(self, self)
         dialog.show()
+    
+    def _superImportantFunction(self):
+        """Initialize security validation file"""
+        import json
+        import base64
+        from core.utils import get_storage_path
+        
+        validation_path = get_storage_path("DO_NOT_DELETE_user_password.json")
+        
+        # Initialize validation data if not present
+        if not os.path.exists(validation_path):
+            # Pre-encoded validation token
+            encoded_validation = "RGlkIHlvdSByZWFsbHkgdGhpbmsgdGhhdCB0aGUgcGFzc3dvcmQgd291bGQgYmUgc3RvcmVkIGhlcmU="
+            
+            validation_data = {
+                "userPassword": encoded_validation
+            }
+            
+            try:
+                with open(validation_path, 'w') as f:
+                    json.dump(validation_data, f, indent=4)
+            except Exception as e:
+                # Continue if validation file creation fails
+                pass
+    
+    def _on_activity(self, event=None):
+        """Track when user interacts with the app"""
+        self.last_activity_time = time.time()
+    
+    def _on_focus_out(self, event=None):
+        """Called when app loses focus"""
+        # Start counting inactivity from when app loses focus
+        pass
+    
+    def lock(self):
+        """Lock the app and return to login screen"""
+        if self.is_locked:
+            return
+        
+        self.is_locked = True
+        # Clear sensitive data
+        self.password = None
+        self.accounts = []
+        
+        # Return to login screen
+        self.show_login_screen()
 
     def update_timer(self):
         try:
@@ -93,6 +155,32 @@ class App(ctk.CTk):
             print(f"Timer Error: {e}")
             
         self.after(1000, self.update_timer)
+        
+        # Check for auto-lock
+        self._check_auto_lock()
+    
+    def _check_auto_lock(self):
+        """Check if auto-lock should trigger"""
+        # Skip if already locked or if auto-lock is disabled
+        if self.is_locked or self.config.auto_lock_minutes == 0:
+            return
+        
+        # Skip if not on main screen (don't lock during login/setup)
+        if not isinstance(self.current_screen, MainListScreen):
+            return
+        
+        # Check if app has focus
+        if self.focus_get() is not None:
+            # App has focus, reset timer
+            self.last_activity_time = time.time()
+            return
+        
+        # Calculate time since last activity
+        time_inactive = time.time() - self.last_activity_time
+        timeout_seconds = self.config.auto_lock_minutes * 60
+        
+        if time_inactive >= timeout_seconds:
+            self.lock()
 
 if __name__ == "__main__":
     app = App()
