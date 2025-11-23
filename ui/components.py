@@ -241,80 +241,21 @@ class AccountFrame(ctk.CTkFrame):
             self.grid_columnconfigure(3, weight=0)
 
     def show_settings_dialog(self):
-        # Create dialog
-        dialog = ctk.CTkToplevel(self)
-        dialog.title(f"Settings - {self.name}")
-        dialog.geometry("350x320")
-        dialog.resizable(False, False)
-        dialog.attributes("-topmost", True)
-        dialog.grab_set()
+        from ui.dialogs.settings_dialog import SettingsDialog
         
-        # Center dialog
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (350 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (320 // 2)
-        dialog.geometry(f"+{x}+{y}")
-        
-        frame = ctk.CTkFrame(dialog, fg_color="transparent")
-        frame.pack(fill="both", expand=True, padx=20, pady=20)
-        
-        # Digits
-        ctk.CTkLabel(frame, text="Digits:", text_color=COLOR_TEXT).grid(row=0, column=0, sticky="w", pady=10)
-        entry_digits = ctk.CTkEntry(frame, width=80)
-        entry_digits.insert(0, str(self.digits))
-        entry_digits.grid(row=0, column=1, sticky="w", pady=10)
-        ctk.CTkLabel(frame, text="(1-9)", text_color="#888888", font=("Roboto", 10)).grid(row=0, column=2, sticky="w", padx=5, pady=10)
-        
-        # Period
-        ctk.CTkLabel(frame, text="Period:", text_color=COLOR_TEXT).grid(row=1, column=0, sticky="w", pady=10)
-        entry_period = ctk.CTkEntry(frame, width=80)
-        entry_period.insert(0, str(self.interval))
-        entry_period.grid(row=1, column=1, sticky="w", pady=10)
-        ctk.CTkLabel(frame, text="(1-120)", text_color="#888888", font=("Roboto", 10)).grid(row=1, column=2, sticky="w", padx=5, pady=10)
-        
-        # Algorithm
-        ctk.CTkLabel(frame, text="Algorithm:", text_color=COLOR_TEXT).grid(row=2, column=0, sticky="w", pady=10)
-        combo_algorithm = ctk.CTkComboBox(frame, values=["SHA1", "SHA256", "SHA512"], width=120)
-        combo_algorithm.set(self.algorithm)
-        combo_algorithm.grid(row=2, column=1, columnspan=2, sticky="w", pady=10)
-        
-        # Error label
-        lbl_error = ctk.CTkLabel(frame, text="", text_color="red")
-        lbl_error.grid(row=3, column=0, columnspan=3, pady=5)
-        
-        def save_settings():
-            try:
-                digits = int(entry_digits.get())
-                if not (1 <= digits <= 9):
-                    lbl_error.configure(text="Digits must be 1-9")
-                    return
-            except ValueError:
-                lbl_error.configure(text="Digits must be a number")
-                return
-            
-            try:
-                period = int(entry_period.get())
-                if not (1 <= period <= 120):
-                    lbl_error.configure(text="Period must be 1-120")
-                    return
-            except ValueError:
-                lbl_error.configure(text="Period must be a number")
-                return
-            
-            algorithm = combo_algorithm.get()
-            
-            # Update via callback
+        def on_save(digits, period, algorithm):
             if 'update_settings' in self.callbacks:
                 self.callbacks['update_settings'](self, digits, period, algorithm)
-            
-            dialog.destroy()
-        
-        # Buttons
-        btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
-        btn_frame.grid(row=4, column=0, columnspan=3, pady=20)
-        
-        ctk.CTkButton(btn_frame, text="Save", width=100, command=save_settings).pack(side="left", padx=5)
-        ctk.CTkButton(btn_frame, text="Cancel", width=100, fg_color="transparent", border_width=1, command=dialog.destroy).pack(side="left", padx=5)
+
+        dialog = SettingsDialog(
+            parent=self,
+            title=f"Settings - {self.name}",
+            initial_digits=self.digits,
+            initial_period=self.interval,
+            initial_algorithm=self.algorithm,
+            on_save=on_save
+        )
+        dialog.show()
 
     def update_code(self):
         code = self.auth_engine.generate_totp(

@@ -9,7 +9,6 @@ class ChangePasswordDialog:
     def show(self):
         # Create dialog
         dialog = ctk.CTkToplevel(self.parent)
-        dialog.iconbitmap("assets/icon.ico")
         # Delay setting icon to prevent override
         dialog.after(200, dialog.iconbitmap, "assets/icon.ico")
         dialog.title("Change Password")
