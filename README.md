@@ -27,6 +27,7 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 - **One-Click Copy**: Click any code to copy it instantly.
 - **Drag & Drop Reordering**: Organize your accounts exactly how you want them.
 - **Secure Export**: Backup your accounts (with a clear warning about unencrypted data).
+- **Auto-Lock**: Configurable timeout with secure memory wiping.
 
 ## Download
 **No installation required!** Just download the latest version and run it.
@@ -57,9 +58,52 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 3. **Customize**: Click "Advanced Options" to tweak the digits, period, and algorithm to match your specific security requirements.
 
 ## Security & Privacy
-- **Local Only**: No cloud sync, no external servers.
-- **Encrypted Storage**: Your account data is stored in `%LOCALAPPDATA%\TOTP-Authenticator\DO_NOT_DELETE_accounts.json` and is fully encrypted using AES-256-GCM.
-- **Memory Protection**: Sensitive data is handled with care in memory.
+
+### 🔐 Security Architecture
+
+TOTP Authenticator implements security best practices in accordance with **OWASP** (Open Web Application Security Project) and **NIST** (National Institute of Standards and Technology) guidelines:
+
+#### Encryption Standards
+- **AES-256-GCM**: Industry-standard Authenticated Encryption with Associated Data (AEAD)
+  - Provides both confidentiality and authenticity
+  - NIST-approved cipher (FIPS 197)
+  - Fresh 12-byte nonce for every encryption operation
+  - Fresh 16-byte salt generated on every save
+
+#### Password Security
+- **Argon2id Key Derivation**: Winner of the Password Hashing Competition
+  - OWASP recommended for password storage
+  - Resistant to GPU/ASIC attacks
+  - Parameters: 6 iterations, 64MB memory, 4 parallelism lanes
+  - No password ever stored in plaintext
+
+#### Data Protection
+- **Local-Only Storage**: No cloud sync, no external servers, fully offline
+- **Encrypted at Rest**: All account data encrypted in `%LOCALAPPDATA%\TOTP-Authenticator`
+- **Secure Memory Management**: Sensitive data wiped from memory on app lock
+- **Auto-Lock**: Configurable timeout (default: 5 minutes) with automatic memory cleanup
+- **Zero Logging**: No debug logs or error messages that could leak sensitive data
+
+#### Export Security
+- **Unencrypted Exports**: CSV/JSON exports are NOT encrypted
+  - 5-second warning countdown before export
+  - Clear security warnings displayed to users
+  - Users must secure exported files themselves
+
+### ⚠️ Security Disclaimer
+
+> **IMPORTANT**: While TOTP Authenticator follows industry best practices and implements security measures in accordance with OWASP and NIST guidelines, this software:
+> 
+> - **Has not been audited** by third-party security professionals
+> - **Has no official certifications** (e.g., Common Criteria, FIPS 140-2)
+> - Is provided **as-is** without warranty of any kind
+> 
+> Use this application at your own risk. For mission-critical or high-security environments, consider professionally audited alternatives with official certifications.
+
+### Privacy Guarantees
+- **Zero Knowledge**: Your master password and TOTP secrets never leave your device
+- **No Telemetry**: No analytics, tracking, or data collection of any kind
+- **No Network Calls**: Application is 100% offline
 
 ## Uninstallation
 
