@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constants import COLOR_TEXT
+from core.constants import COLOR_TEXT
 
 class SetupScreen:
     def __init__(self, container, storage, on_success):

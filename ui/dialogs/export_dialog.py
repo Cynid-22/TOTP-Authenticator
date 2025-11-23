@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
-from constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
+from core.constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
 
 class ExportDialog:
     def __init__(self, parent, app):

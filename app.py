@@ -1,12 +1,12 @@
 import customtkinter as ctk
 import os
-from auth_engine import AuthEngine
-from storage import Storage
-from screens.login import LoginScreen
-from screens.setup import SetupScreen
-from screens.main_list import MainListScreen
-from screens.add_account import AddAccountScreen
-from dialogs.password_dialog import ChangePasswordDialog
+from core.otp import AuthEngine
+from core.storage import Storage
+from ui.screens.login import LoginScreen
+from ui.screens.setup import SetupScreen
+from ui.screens.account_list import MainListScreen
+from ui.screens.add_account import AddAccountScreen
+from ui.dialogs.password_dialog import ChangePasswordDialog
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")

@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constants import COLOR_TEXT
+from core.constants import COLOR_TEXT
 
 class AddAccountScreen:
     def __init__(self, container, app):
