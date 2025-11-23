@@ -27,8 +27,8 @@ class App(ctk.CTk):
             self.iconbitmap(icon_path)
 
         # Backend Setup
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        storage_path = os.path.join(base_dir, "accounts.json")
+        from core.utils import get_storage_path
+        storage_path = get_storage_path("DO_NOT_DELETE_accounts.json")
         
         self.auth_engine = AuthEngine()
         self.storage = Storage(filepath=storage_path)
