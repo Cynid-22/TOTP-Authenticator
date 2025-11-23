@@ -17,8 +17,8 @@ def create_trashcan_icon(size=23):
         if os.path.exists(icon_path):
             img = Image.open(icon_path)
             return ctk.CTkImage(light_image=img, dark_image=img, size=(size, size))
-    except Exception as e:
-        print(f"Error loading trash icon: {e}")
+    except Exception:
+        pass
     
     # Fallback: return None or create a simple placeholder
     return None
@@ -49,8 +49,8 @@ def create_settings_icon(size=23):
             
             img.putdata(new_data)
             return ctk.CTkImage(light_image=img, dark_image=img, size=(size, size))
-    except Exception as e:
-        print(f"Error loading settings icon: {e}")
+    except Exception:
+        pass
     
     # Fallback: return None or create a simple placeholder
     return None

@@ -26,7 +26,7 @@ class AutoLockDialog(BaseDialog):
         self.entry_minutes.insert(0, str(self.config.auto_lock_minutes))
         self.entry_minutes.grid(row=0, column=1, sticky="w")
         
-        ctk.CTkLabel(setting_frame, text="(0 = disabled)", text_color="#888888", font=("Roboto", 10)).grid(row=0, column=2, sticky="w", padx=5)
+        ctk.CTkLabel(setting_frame, text="(0 = disabled, default: 5)", text_color="#888888", font=("Roboto", 10)).grid(row=0, column=2, sticky="w", padx=5)
         
         # Error label
         self.lbl_error = ctk.CTkLabel(frame, text="", text_color="red")

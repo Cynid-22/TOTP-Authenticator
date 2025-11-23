@@ -65,8 +65,8 @@ class Storage:
             
             self.key = key
             return True
-        except Exception as e:
-            print(f"Unlock failed: {e}")
+        except Exception:
+            # Authentication failed
             return False
 
     def save_accounts(self, accounts, password):
@@ -105,8 +105,7 @@ class Storage:
             
             self.key = key # Update current key
             return True
-        except Exception as e:
-            print(f"Error saving accounts: {e}")
+        except Exception:
             return False
 
     def load_accounts(self):
@@ -129,8 +128,7 @@ class Storage:
             aesgcm = AESGCM(self.key)
             decrypted_data = aesgcm.decrypt(nonce, encrypted_data, None)
             return json.loads(decrypted_data.decode())
-        except Exception as e:
-            print(f"Error loading accounts: {e}")
+        except Exception:
             return []
 
     def export_accounts(self, accounts, format, filepath):
@@ -155,8 +153,7 @@ class Storage:
             else:
                 raise ValueError("Unsupported format")
             return True
-        except Exception as e:
-            print(f"Export error: {e}")
+        except Exception:
             return False
 
     def import_accounts(self, filepath):
@@ -203,6 +200,5 @@ class Storage:
                         accounts.append(row)
             return accounts
 
-        except Exception as e:
-            print(f"Import error: {e}")
+        except Exception:
             return []
