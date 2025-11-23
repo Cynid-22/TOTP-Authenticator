@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
+from core.constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
 
 class ChangePasswordDialog:
     def __init__(self, parent, app):

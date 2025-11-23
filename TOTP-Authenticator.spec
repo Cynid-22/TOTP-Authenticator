@@ -10,12 +10,14 @@ ctk_path = os.path.dirname(customtkinter.__file__)
 block_cipher = None
 
 a = Analysis(
-    ['main.py'],
+    ['app.py'],
     pathex=[],
     binaries=[],
     datas=[
         (os.path.join(ctk_path, 'assets'), os.path.join('customtkinter', 'assets')),
         ('assets', 'assets'),
+        ('core', 'core'),
+        ('ui', 'ui'),
     ],
     hiddenimports=['PIL', 'PIL._tkinter_finder'],
     hookspath=[],

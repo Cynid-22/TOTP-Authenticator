@@ -1,6 +1,6 @@
 import customtkinter as ctk
-from constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
-from ui_components import AccountFrame
+from core.constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
+from ui.components import AccountFrame
 
 class MainListScreen:
     def __init__(self, container, app):
@@ -146,7 +146,7 @@ class MainListScreen:
                 messagebox.showerror("Error", "Failed to import accounts. Check file format.")
 
     def export_accounts(self):
-        from dialogs.export_dialog import ExportDialog
+        from ui.dialogs.export_dialog import ExportDialog
         dialog = ExportDialog(self.container, self.app)
         dialog.show()
 

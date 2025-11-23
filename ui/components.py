@@ -5,13 +5,15 @@ import pyperclip
 from PIL import Image, ImageDraw
 import os
 
-from constants import COLOR_TEXT, COLOR_ACCENT, COLOR_BG_CARD
+from core.constants import COLOR_TEXT, COLOR_ACCENT, COLOR_BG_CARD
 
 def create_trashcan_icon(size=23):
     """Load trashcan icon from assets folder"""
     try:
         # Get path to assets folder
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+        # Need to go up one level from ui/ to root, then to assets
+        # ui/components.py -> ui/ -> root -> assets
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         icon_path = os.path.join(base_dir, "assets", "trash.ico")
         
         if os.path.exists(icon_path):
@@ -27,7 +29,7 @@ def create_settings_icon(size=23):
     """Load settings icon from assets folder and recolor to light cream"""
     try:
         # Get path to assets folder
-        base_dir = os.path.dirname(os.path.abspath(__file__))
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         icon_path = os.path.join(base_dir, "assets", "setting.ico")
         
         if os.path.exists(icon_path):
@@ -131,7 +133,9 @@ class AccountFrame(ctk.CTkFrame):
         # --- Edit Mode Widgets (Hidden by default) ---
         # Up/Down Arrow Buttons
         self.btn_up = ctk.CTkButton(self, text="▲", width=30, height=30, fg_color="transparent", hover_color="#1f6aa5", font=("Roboto", 16), command=lambda: self.callbacks['move_up'](self))
+        self.btn_up.grid(row=0, column=3, padx=2)
         self.btn_down = ctk.CTkButton(self, text="▼", width=30, height=30, fg_color="transparent", hover_color="#1f6aa5", font=("Roboto", 16), command=lambda: self.callbacks['move_down'](self))
+        self.btn_down.grid(row=0, column=4, padx=5)
 
         # Trashcan Icon
         self.trash_icon = create_trashcan_icon()
@@ -142,6 +146,12 @@ class AccountFrame(ctk.CTkFrame):
         self.btn_settings = ctk.CTkButton(self, text="", image=self.settings_icon, width=30, height=30, fg_color="transparent", hover_color="#1f6aa5", command=self.show_settings_dialog)
 
         self.update_code()
+        
+        # Initially hide edit buttons
+        self.btn_up.grid_remove()
+        self.btn_down.grid_remove()
+        self.btn_delete.grid_remove()
+        self.btn_settings.grid_remove()
 
     def show_delete_confirmation(self):
         if hasattr(self, 'confirm_popup') and self.confirm_popup and self.confirm_popup.winfo_exists():
