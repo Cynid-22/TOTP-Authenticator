@@ -1,30 +1,15 @@
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
-from core.constants import COLOR_TEXT, COLOR_BG_CARD, COLOR_ACCENT
+from core.constants import COLOR_TEXT
+from ui.dialogs.base_dialog import BaseDialog
 
-class ExportDialog:
+class ExportDialog(BaseDialog):
     def __init__(self, parent, app):
-        self.parent = parent
+        super().__init__(parent, "Export Accounts", width=350, height=250)
         self.app = app
 
-    def show(self):
-        # Create dialog
-        dialog = ctk.CTkToplevel(self.parent)
-        # Delay setting icon to prevent override
-        dialog.after(200, dialog.iconbitmap, "assets/icon.ico")
-        dialog.title("Export Accounts")
-        dialog.geometry("350x250")
-        dialog.resizable(False, False)
-        dialog.attributes("-topmost", True)
-        dialog.grab_set()
-        
-        # Center dialog
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (350 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (250 // 2)
-        dialog.geometry(f"+{x}+{y}")
-        
-        frame = ctk.CTkFrame(dialog, fg_color="transparent")
+    def setup_ui(self):
+        frame = ctk.CTkFrame(self.dialog, fg_color="transparent")
         frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         ctk.CTkLabel(frame, text="Export Accounts", font=("Roboto", 16, "bold"), text_color=COLOR_TEXT).pack(pady=(0, 20))
@@ -49,7 +34,7 @@ class ExportDialog:
                 "ANYONE who accesses this file will be able to generate your TOTP codes.\n\n"
                 "Do you want to proceed?",
                 icon='warning',
-                parent=dialog
+                parent=self.dialog
             )
             
             if not confirm:
@@ -68,7 +53,7 @@ class ExportDialog:
                 title="Export Accounts",
                 defaultextension=def_ext,
                 filetypes=filetypes,
-                parent=dialog
+                parent=self.dialog
             )
             
             if not filepath:
@@ -76,10 +61,10 @@ class ExportDialog:
                 
             # Perform Export
             if self.app.storage.export_accounts(self.app.accounts, format_type, filepath):
-                messagebox.showinfo("Success", "Accounts exported successfully!", parent=dialog)
-                dialog.destroy()
+                messagebox.showinfo("Success", "Accounts exported successfully!", parent=self.dialog)
+                self.destroy()
             else:
-                messagebox.showerror("Error", "Failed to export accounts.", parent=dialog)
+                messagebox.showerror("Error", "Failed to export accounts.", parent=self.dialog)
 
         ctk.CTkButton(btn_frame, text="Export", width=140, height=36, fg_color="#ff5555", hover_color="#aa0000", command=export).pack(side="left", padx=5)
-        ctk.CTkButton(btn_frame, text="Cancel", width=140, height=36, fg_color="transparent", border_width=1, command=dialog.destroy).pack(side="left", padx=5)
+        ctk.CTkButton(btn_frame, text="Cancel", width=140, height=36, fg_color="transparent", border_width=1, command=self.destroy).pack(side="left", padx=5)

@@ -21,7 +21,8 @@ class App(ctk.CTk):
         self.resizable(False, False)
         
         # Set Window Icon
-        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "icon.ico")
+        from core.utils import get_asset_path
+        icon_path = get_asset_path("icon.ico")
         if os.path.exists(icon_path):
             self.iconbitmap(icon_path)
 

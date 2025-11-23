@@ -1,34 +1,17 @@
 import customtkinter as ctk
 from core.constants import COLOR_TEXT
+from ui.dialogs.base_dialog import BaseDialog
 
-class SettingsDialog:
+class SettingsDialog(BaseDialog):
     def __init__(self, parent, title, initial_digits, initial_period, initial_algorithm, on_save):
-        self.parent = parent
-        self.title_text = title
+        super().__init__(parent, title, width=350, height=320)
         self.initial_digits = initial_digits
         self.initial_period = initial_period
         self.initial_algorithm = initial_algorithm
         self.on_save = on_save # callback(digits, period, algorithm)
 
-    def show(self):
-        # Create dialog
-        dialog = ctk.CTkToplevel(self.parent)
-        dialog.iconbitmap("assets/icon.ico")
-        # Delay setting icon to prevent override
-        dialog.after(200, dialog.iconbitmap, "assets/icon.ico")
-        dialog.title(self.title_text)
-        dialog.geometry("350x320")
-        dialog.resizable(False, False)
-        dialog.attributes("-topmost", True)
-        dialog.grab_set()
-        
-        # Center dialog
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() // 2) - (350 // 2)
-        y = (dialog.winfo_screenheight() // 2) - (320 // 2)
-        dialog.geometry(f"+{x}+{y}")
-        
-        frame = ctk.CTkFrame(dialog, fg_color="transparent")
+    def setup_ui(self):
+        frame = ctk.CTkFrame(self.dialog, fg_color="transparent")
         frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # Digits
@@ -79,11 +62,11 @@ class SettingsDialog:
             # Update via callback
             self.on_save(digits, period, algorithm)
             
-            dialog.destroy()
+            self.destroy()
         
         # Buttons
         btn_frame = ctk.CTkFrame(frame, fg_color="transparent")
         btn_frame.grid(row=4, column=0, columnspan=3, pady=20)
         
         ctk.CTkButton(btn_frame, text="Save", width=100, command=save_settings).pack(side="left", padx=5)
-        ctk.CTkButton(btn_frame, text="Cancel", width=100, fg_color="transparent", border_width=1, command=dialog.destroy).pack(side="left", padx=5)
+        ctk.CTkButton(btn_frame, text="Cancel", width=100, fg_color="transparent", border_width=1, command=self.destroy).pack(side="left", padx=5)
