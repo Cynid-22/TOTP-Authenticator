@@ -27,7 +27,16 @@ class AuthEngine:
         
         digest_name = algorithm_map.get(algorithm.upper().replace('-', ''), 'sha1')
         
-        totp = pyotp.TOTP(secret, digits=digits, interval=interval, digest=digest_name)
+        # Ensure secret is string for pyotp
+        if isinstance(secret, (bytes, bytearray)):
+            try:
+                secret_str = secret.decode('utf-8')
+            except AttributeError:
+                secret_str = str(secret)
+        else:
+            secret_str = secret
+
+        totp = pyotp.TOTP(secret_str, digits=digits, interval=interval, digest=digest_name)
         return totp.now()
 
     def get_remaining_time(self, interval=30):

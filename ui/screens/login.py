@@ -23,9 +23,11 @@ class LoginScreen:
         self.lbl_error.pack(pady=5)
 
     def login(self, event=None):
-        password = self.entry_password.get()
-        if self.storage.unlock(password):
+        password_str = self.entry_password.get()
+        password_bytes = bytearray(password_str.encode('utf-8'))
+        
+        if self.storage.unlock(password_bytes):
             accounts = self.storage.load_accounts()
-            self.on_success(password, accounts)
+            self.on_success(password_bytes, accounts)
         else:
             self.lbl_error.configure(text="Incorrect password")

@@ -82,7 +82,14 @@ class App(ctk.CTk):
         self.current_screen.show()
 
     def on_login_success(self, password, accounts):
-        self.password = password
+        # Convert password to bytearray for mutable security
+        if isinstance(password, str):
+            self.password = bytearray(password.encode('utf-8'))
+        elif isinstance(password, bytes):
+            self.password = bytearray(password)
+        else:
+            self.password = password
+            
         self.accounts = accounts
         self.is_locked = False
         self.last_activity_time = time.time()

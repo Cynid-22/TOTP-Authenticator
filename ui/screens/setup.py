@@ -39,7 +39,9 @@ class SetupScreen:
             self.lbl_error.configure(text="Passwords do not match")
             return
         
-        if self.storage.unlock(password):
+        password_bytes = bytearray(password.encode('utf-8'))
+        
+        if self.storage.unlock(password_bytes):
             accounts = []
-            self.storage.save_accounts(accounts, password)
-            self.on_success(password, accounts)
+            self.storage.save_accounts(accounts, password_bytes)
+            self.on_success(password_bytes, accounts)
