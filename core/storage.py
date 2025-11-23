@@ -28,7 +28,13 @@ class Storage:
             ad=None,
             secret=None
         )
-        key = kdf.derive(password.encode())
+        
+        if isinstance(password, (bytes, bytearray)):
+            password_bytes = password
+        else:
+            password_bytes = password.encode()
+            
+        key = kdf.derive(password_bytes)
         return key, salt
 
     def unlock(self, password):
