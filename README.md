@@ -2,7 +2,7 @@
 
 **A secure, modern, and highly customizable TOTP authenticator built for power users.**
 
-Most 2FA apps lock you into the standard 6-digit, 30-second SHA1 default. **TOTP Authenticator is different.** We give you full control over your security parameters, making it one of the few authenticators that supports custom digits, periods, and algorithms for every single account.
+Most 2FA apps lock you into the standard 6-digit, 30-second SHA1 default. **TOTP Authenticator is different.** This give you full control over your security parameters, making it one of the few authenticators that supports custom digits, periods, and algorithms for every single account.
 
 ## Why TOTP Authenticator?
 
@@ -28,7 +28,14 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 - **Drag & Drop Reordering**: Organize your accounts exactly how you want them.
 - **Secure Export**: Backup your accounts (with a clear warning about unencrypted data).
 
-## Installation
+## Download
+**No installation required!** Just download the latest version and run it.
+
+1. Go to the [Releases](../../releases) page.
+2. Download `TOTP-Authenticator.exe`.
+3. Double-click to run.
+
+## Development
 
 ### Prerequisites
 - Python 3.7+
@@ -36,7 +43,7 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 ### Setup
 1. Install dependencies:
    ```bash
-   pip install customtkinter pyotp cryptography pyperclip pillow
+   pip install customtkinter pyotp cryptography pyperclip pillow pyinstaller
    ```
 2. Run the application:
    ```bash
