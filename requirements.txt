@@ -1,6 +1,6 @@
 customtkinter==5.2.2
 pyotp==2.9.0
-cryptography==42.0.5
+cryptography==44.0.1
 pyperclip==1.8.2
-pillow==10.2.0
+pillow==10.3.0
 pyinstaller==6.4.0
