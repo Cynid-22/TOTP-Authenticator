@@ -1,75 +1,65 @@
 # TOTP Authenticator
 
-A secure, modern TOTP (Time-based One-Time Password) authenticator built with Python and CustomTkinter.
+**A secure, modern, and highly customizable TOTP authenticator built for power users.**
 
-## Features
+Most 2FA apps lock you into the standard 6-digit, 30-second SHA1 default. **TOTP Authenticator is different.** This give you full control over your security parameters, making it one of the few authenticators that supports custom digits, periods, and algorithms for every single account.
 
-### Security
-- **AES-256-GCM Encryption**: All accounts are encrypted using industry-standard AES-256-GCM
-- **Argon2id Key Derivation**: Password-based encryption key derivation with OWASP-recommended parameters
-- **Master Password**: Single password protects all your accounts
-- **Password Change**: Change your master password without losing accounts
+## Why TOTP Authenticator?
 
-### TOTP Configuration
-- **Custom Digits**: Support for 1 to 9 digit TOTP codes
-- **Custom Period**: Configurable time periods (default 30s, range 1-120s)
-- **Multiple Algorithms**: SHA1, SHA256, and SHA512 support
-- **Per-Account Settings**: Configure TOTP parameters individually for each account
+### 🔧 Unmatched Customization
+Don't settle for defaults. Configure every aspect of your TOTP codes:
+- **Custom Digits**: Support for anywhere from **1 to 9 digits**.
+- **Flexible Periods**: Set custom rotation periods from **1 to 120 seconds**.
+- **Algorithm Choice**: Full support for **SHA1, SHA256, and SHA512**.
 
-### User Interface
-- **Modern Dark Theme**: Clean, modern interface with smooth animations
-- **Circular Progress Timer**: Visual countdown for code expiration
-- **Smart Code Formatting**: Auto-formatted code display based on digit count
-- **Arrow Button Reordering**: Use ▲▼ buttons to reorder accounts
-- **Edit Mode**: Toggle edit mode to delete or reorder accounts
-- **One-Click Copy**: Click any code to copy to clipboard
-- **Custom Icons**: Application icon and asset support
-- **Import/Export**: Backup and restore accounts via JSON or CSV
+### 🔒 Enterprise-Grade Security
+- **AES-256-GCM Encryption**: Your secrets are encrypted with industry-standard authenticated encryption.
+- **Argon2id Key Derivation**: Your master password is protected by the winner of the Password Hashing Competition.
+- **Zero Knowledge**: We never see your password or keys. Everything stays local on your device.
 
-## Installation
+### ✨ Modern Experience
+- **Sleek Dark Mode**: A beautiful, modern interface built with CustomTkinter.
+- **Smart Formatting**: Codes are automatically formatted for readability based on their length.
+- **Import/Export**: Full control over your data with JSON and CSV support.
+
+## Features at a Glance
+- **Circular Progress Timer**: Visual countdown for code expiration.
+- **One-Click Copy**: Click any code to copy it instantly.
+- **Drag & Drop Reordering**: Organize your accounts exactly how you want them.
+- **Secure Export**: Backup your accounts (with a clear warning about unencrypted data).
+
+## Download
+**No installation required!** Just download the latest version and run it.
+
+1. Go to the [Releases](../../releases) page.
+2. Download `TOTP-Authenticator.exe`.
+3. Double-click to run.
+
+## Development
 
 ### Prerequisites
-- Python 3.7 or higher
+- Python 3.7+
 
-### Install Dependencies
-```bash
-pip install customtkinter pyotp cryptography pyperclip pillow
-```
+### Setup
+1. Install dependencies:
+   ```bash
+   pip install customtkinter pyotp cryptography pyperclip pillow pyinstaller
+   ```
+2. Run the application:
+   ```bash
+   python main.py
+   ```
 
-## Usage
+## Getting Started
 
-### Running the App
-```bash
-python main.py
-```
+1. **Create a Master Password**: On first run, set a strong password. This encrypts your entire vault.
+2. **Add an Account**: Click the **+** button.
+3. **Customize**: Click "Advanced Options" to tweak the digits, period, and algorithm to match your specific security requirements.
 
-### First Run
-1. You'll be prompted to create a master password
-2. This password encrypts all your accounts - **don't forget it!**
+## Security & Privacy
+- **Local Only**: No cloud sync, no external servers.
+- **Encrypted Storage**: `accounts.json` is fully encrypted.
+- **Memory Protection**: Sensitive data is handled with care in memory.
 
-### Login
-Enter your master password to unlock the app
-
-### Adding Accounts
-1. Click the **+** button
-2. Enter the account name (e.g., "Google", "GitHub")
-3. Enter the secret key from the service
-4. **(Optional)** Click "Advanced Options" to configure:
-   - Number of digits (1 to 9)
-   - Time period (in seconds, 1 to 120)
-   - Hash algorithm (SHA1, SHA256, SHA512)
-
-### Managing Accounts
-- **Copy Code**: Click on any TOTP code to copy it
-- **Edit Account Settings**: Click the ⚙️ icon on any account
-- **Delete Account**: Enable edit mode (≡ menu → Edit) and click the 🗑️ icon
-- **Reorder Accounts**: Enable edit mode and use ▲▼ arrow buttons to move accounts up or down
-- **Change Password**: Click ≡ menu → Change Password
-- **Import/Export**: Click ≡ menu → Import/Export Accounts to backup or restore your data (JSON/CSV supported)
-
-## Security Notes
-- Account data is encrypted using AES-256-GCM with Argon2id key derivation
-- The master password is never stored - only used to derive encryption keys
-- Each save operation generates a new salt and nonce for security
-- If you forget your master password, your accounts cannot be recovered
-- **Export Warning**: Exported files (JSON/CSV) are **NOT encrypted**. Store them securely or delete them after use.
+---
+*Built with Python & CustomTkinter*
