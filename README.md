@@ -72,7 +72,7 @@ TOTP Authenticator implements security best practices in accordance with **OWASP
 
 #### Password Security
 - **Argon2id Key Derivation**: Winner of the Password Hashing Competition
-  - OWASP recommended for password storage
+  - OWASP recommended for password
   - Resistant to GPU/ASIC attacks
   - Parameters: 6 iterations, 64MB memory, 4 parallelism lanes
   - No password ever stored in plaintext
