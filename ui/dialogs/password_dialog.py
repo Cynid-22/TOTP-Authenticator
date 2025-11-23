@@ -89,8 +89,8 @@ class ChangePasswordDialog(BaseDialog):
                 # Change the "Change Password" button to "OK" and make it close the dialog
                 btn_change.configure(text="OK", command=self.destroy)
                 
-            except Exception as e:
-                lbl_message.configure(text=f"Error: {str(e)}", text_color="red")
+            except Exception:
+                lbl_message.configure(text="Failed to change password", text_color="red")
         
         # Configure the change button command
         btn_change.configure(command=change_password)
