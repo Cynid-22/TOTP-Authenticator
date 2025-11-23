@@ -17,9 +17,9 @@ class Config:
                 with open(self.config_path, 'r') as f:
                     data = json.load(f)
                     self.auto_lock_minutes = data.get('auto_lock_minutes', 5)
-            except Exception as e:
-                print(f"Error loading config: {e}")
+            except Exception:
                 # Use defaults if load fails
+                pass
     
     def save(self):
         """Save configuration to file"""
@@ -29,5 +29,5 @@ class Config:
             }
             with open(self.config_path, 'w') as f:
                 json.dump(data, f, indent=4)
-        except Exception as e:
-            print(f"Error saving config: {e}")
+        except Exception:
+            pass

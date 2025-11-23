@@ -40,8 +40,8 @@ class MainListScreen:
             for frame in self.account_frames:
                 if frame.winfo_exists():
                     frame.update_code()
-        except Exception as e:
-            print(f"Timer Error: {e}")
+        except Exception:
+            pass
 
     def show_menu(self):
         """Show context menu with options"""
@@ -164,7 +164,7 @@ class MainListScreen:
             self.app.accounts.pop(index)
             self.save_and_refresh()
         except ValueError:
-            print("Error: Account frame not found for deletion")
+            pass
 
     def move_up(self, account_frame):
         try:
@@ -174,7 +174,7 @@ class MainListScreen:
                 self.app.accounts[index], self.app.accounts[index - 1] = self.app.accounts[index - 1], self.app.accounts[index]
                 self.save_and_refresh()
         except ValueError:
-            print("Error: Account frame not found")
+            pass
 
     def move_down(self, account_frame):
         try:
@@ -184,7 +184,7 @@ class MainListScreen:
                 self.app.accounts[index], self.app.accounts[index + 1] = self.app.accounts[index + 1], self.app.accounts[index]
                 self.save_and_refresh()
         except ValueError:
-            print("Error: Account frame not found")
+            pass
 
     def save_and_refresh(self):
         """Helper to save accounts, refresh list, and restore edit mode"""
@@ -213,4 +213,4 @@ class MainListScreen:
             # Force code to regenerate with new settings
             account_frame.update_code()
         except ValueError:
-            print("Error: Account frame not found for settings update")
+            pass

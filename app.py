@@ -8,6 +8,7 @@ from ui.screens.account_list import MainListScreen
 from ui.screens.add_account import AddAccountScreen
 from ui.dialogs.password_dialog import ChangePasswordDialog
 from core.config import Config
+from core.secure_memory import secure_wipe_string, secure_wipe_list
 import time
 
 ctk.set_appearance_mode("Dark")
@@ -140,7 +141,11 @@ class App(ctk.CTk):
             return
         
         self.is_locked = True
-        # Clear sensitive data
+        # Secure wipe sensitive data
+        secure_wipe_string(self.password)
+        secure_wipe_list(self.accounts)
+        
+        # Clear references
         self.password = None
         self.accounts = []
         
@@ -151,8 +156,8 @@ class App(ctk.CTk):
         try:
             if hasattr(self.current_screen, 'update'):
                 self.current_screen.update()
-        except Exception as e:
-            print(f"Timer Error: {e}")
+        except Exception:
+            pass
             
         self.after(1000, self.update_timer)
         

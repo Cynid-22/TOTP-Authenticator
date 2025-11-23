@@ -12,7 +12,8 @@ class SetupScreen:
         frame.place(relx=0.5, rely=0.5, anchor="center")
 
         ctk.CTkLabel(frame, text="Create Vault", font=("Roboto", 24, "bold"), text_color=COLOR_TEXT).pack(pady=20)
-        ctk.CTkLabel(frame, text="Set a secure password", text_color=COLOR_TEXT).pack(pady=(0, 20))
+        ctk.CTkLabel(frame, text="Set a secure password", text_color=COLOR_TEXT).pack(pady=(0, 5))
+        ctk.CTkLabel(frame, text="(Recommended: 8+ characters)", text_color="#888888", font=("Roboto", 10)).pack(pady=(0, 15))
         
         self.entry_password = ctk.CTkEntry(frame, show="*", width=220, placeholder_text="New Password")
         self.entry_password.pack(pady=10)

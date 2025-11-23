@@ -20,6 +20,7 @@ class ChangePasswordDialog(BaseDialog):
         
         # New Password
         ctk.CTkLabel(frame, text="New Password:", text_color=COLOR_TEXT).pack(anchor="w", pady=(0, 5))
+        ctk.CTkLabel(frame, text="(Recommended: 8+ characters)", text_color="#888888", font=("Roboto", 9)).pack(anchor="w", pady=(0, 5))
         entry_new = ctk.CTkEntry(frame, width=300, show="*")
         entry_new.pack(pady=(0, 15))
         
