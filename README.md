@@ -15,7 +15,7 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 ### 🔒 Enterprise-Grade Security
 - **AES-256-GCM Encryption**: Your secrets are encrypted with industry-standard authenticated encryption.
 - **Argon2id Key Derivation**: Your master password is protected by the winner of the Password Hashing Competition.
-- **Zero Knowledge**: We never see your password or keys. Everything stays local on your device.
+- **Zero Knowledge**: I never see your password or keys. Everything stays local on your device.
 
 ### ✨ Modern Experience
 - **Sleek Dark Mode**: A beautiful, modern interface built with CustomTkinter.
