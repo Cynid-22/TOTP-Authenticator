@@ -9,7 +9,7 @@ class Storage:
         self.filepath = filepath
         self.key = None
 
-    def derive_key(self, password, salt=None):
+    def derive_key(self, password, salt=None, iterations=6, memory_cost=65536, lanes=4):
         """
         Derives a 32-byte AES-256 key from the password using Argon2id.
         If salt is None, generates a new 16-byte salt.
@@ -18,13 +18,13 @@ class Storage:
         if salt is None:
             salt = os.urandom(16)
         
-        # Argon2id parameters (OWASP recommendations or standard secure defaults)
+        # Argon2id parameters
         kdf = Argon2id(
             salt=salt,
             length=32,
-            iterations=2,
-            lanes=4,
-            memory_cost=65536, # 64 MB
+            iterations=iterations,
+            lanes=lanes,
+            memory_cost=memory_cost,
             ad=None,
             secret=None
         )
@@ -37,7 +37,7 @@ class Storage:
         Returns True if successful (or if file doesn't exist yet), False otherwise.
         """
         if not os.path.exists(self.filepath):
-            # New file, just derive a key to be ready
+            # New file, just derive a key to be ready (using new defaults)
             key, _ = self.derive_key(password)
             self.key = key
             return True
@@ -47,7 +47,14 @@ class Storage:
                 data = json.load(f)
             
             salt = base64.b64decode(data['salt'])
-            key, _ = self.derive_key(password, salt)
+            
+            # Get KDF params from file, or use legacy defaults
+            kdf_params = data.get('kdf_params', {})
+            iterations = kdf_params.get('iterations', 2) # Legacy default: 2
+            memory_cost = kdf_params.get('memory_cost', 65536)
+            lanes = kdf_params.get('lanes', 4)
+            
+            key, _ = self.derive_key(password, salt, iterations, memory_cost, lanes)
             
             # Verify by attempting to decrypt
             nonce = base64.b64decode(data['nonce'])
@@ -65,13 +72,19 @@ class Storage:
     def save_accounts(self, accounts, password):
         """
         Encrypts and saves the accounts using AES-256-GCM.
+        Uses upgraded security parameters (iterations=6).
         """
         try:
+            # New security defaults
+            iterations = 6
+            memory_cost = 65536
+            lanes = 4
+            
             # Generate new salt and key for every save
-            key, salt = self.derive_key(password)
+            key, salt = self.derive_key(password, salt=None, iterations=iterations, memory_cost=memory_cost, lanes=lanes)
             
             aesgcm = AESGCM(key)
-            nonce = os.urandom(12) # NIST recommended nonce size for GCM
+            nonce = os.urandom(12) # NIST recommended nonce size for GCM - ALWAYS FRESH
             
             data_json = json.dumps(accounts).encode()
             encrypted_data = aesgcm.encrypt(nonce, data_json, None)
@@ -79,7 +92,12 @@ class Storage:
             storage_data = {
                 "salt": base64.b64encode(salt).decode(),
                 "nonce": base64.b64encode(nonce).decode(),
-                "data": base64.b64encode(encrypted_data).decode()
+                "data": base64.b64encode(encrypted_data).decode(),
+                "kdf_params": {
+                    "iterations": iterations,
+                    "memory_cost": memory_cost,
+                    "lanes": lanes
+                }
             }
             
             with open(self.filepath, "w") as f:
