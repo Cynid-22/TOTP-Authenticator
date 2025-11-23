@@ -47,7 +47,7 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
    ```
 2. Run the application:
    ```bash
-   python main.py
+   python app.py
    ```
 
 ## Getting Started
@@ -58,8 +58,16 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 
 ## Security & Privacy
 - **Local Only**: No cloud sync, no external servers.
-- **Encrypted Storage**: `accounts.json` is fully encrypted.
+- **Encrypted Storage**: Your account data is stored in `%LOCALAPPDATA%\TOTP-Authenticator\DO_NOT_DELETE_accounts.json` and is fully encrypted using AES-256-GCM.
 - **Memory Protection**: Sensitive data is handled with care in memory.
+
+## Uninstallation
+
+To completely remove TOTP Authenticator from your system:
+
+1. Delete the `TOTP-Authenticator.exe` file.
+2. **(Optional)** To permanently delete your encrypted account data, navigate to `%LOCALAPPDATA%\TOTP-Authenticator` and delete the `DO_NOT_DELETE_accounts.json` file.
+   - **Note**: This file contains your encrypted 2FA secrets. Only delete it if you no longer need access to these accounts or have backed them up elsewhere.
 
 ---
 *Built with Python & CustomTkinter*
