@@ -9,6 +9,10 @@ class Config:
         self.config_path = get_storage_path("config.json")
         self.auto_lock_minutes = 5  # Default: 5 minutes
         self.load()
+        
+        # Create config file with defaults if it doesn't exist
+        if not os.path.exists(self.config_path):
+            self.save()
     
     def load(self):
         """Load configuration from file"""
