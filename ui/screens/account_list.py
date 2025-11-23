@@ -64,13 +64,15 @@ class MainListScreen:
         def close_menu(event=None):
             if menu.winfo_exists():
                 menu.destroy()
-                # Unbind the configure event
+                # Unbind all events
                 self.app.unbind("<Configure>")
+                self.app.unbind("<Unmap>")
         
         # Bind to main window click and window move
         # Note: self.app is the main window
         self.app.bind("<Button-1>", close_menu, add="+")
         self.app.bind("<Configure>", close_menu)  # Close when window moves/resizes
+        self.app.bind("<Unmap>", close_menu)  # Close when window is minimized
         menu.bind("<FocusOut>", lambda e: close_menu())
 
     def toggle_edit_mode(self):
