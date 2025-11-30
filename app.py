@@ -194,6 +194,33 @@ class App(ctk.CTk):
         if time_inactive >= timeout_seconds:
             self.lock()
 
+    def _setup_exception_handler(self):
+        """
+        Global exception handler to prevent traceback leakage in production.
+        Logs errors securely or suppresses them.
+        """
+        import sys
+        import traceback
+        
+        def handle_exception(exc_type, exc_value, exc_traceback):
+            # Ignore KeyboardInterrupt so Ctrl+C still works
+            if issubclass(exc_type, KeyboardInterrupt):
+                sys.__excepthook__(exc_type, exc_value, exc_traceback)
+                return
+
+            # In production (frozen), suppress detailed traceback
+            if getattr(sys, 'frozen', False):
+                # Log only the error type and message, not the stack trace
+                # to avoid leaking paths or variable values
+                error_msg = f"An unexpected error occurred: {exc_type.__name__}: {exc_value}"
+                print(error_msg, file=sys.stderr)
+            else:
+                # In development, show full traceback
+                sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+        sys.excepthook = handle_exception
+
 if __name__ == "__main__":
     app = App()
+    app._setup_exception_handler()
     app.mainloop()

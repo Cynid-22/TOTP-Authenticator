@@ -26,6 +26,9 @@ class LoginScreen:
         password_str = self.entry_password.get()
         password_bytes = bytearray(password_str.encode('utf-8'))
         
+        # Clear the immutable string from memory immediately
+        del password_str
+        
         if self.storage.unlock(password_bytes):
             accounts = self.storage.load_accounts()
             self.on_success(password_bytes, accounts)

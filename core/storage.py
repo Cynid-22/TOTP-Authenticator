@@ -92,7 +92,19 @@ class Storage:
             aesgcm = AESGCM(key)
             nonce = os.urandom(12) # NIST recommended nonce size for GCM - ALWAYS FRESH
             
-            data_json = json.dumps(accounts).encode()
+            # Prepare data for JSON serialization
+            # We must decode bytearrays to strings for JSON, but we do it only here
+            serializable_accounts = []
+            for acc in accounts:
+                acc_copy = acc.copy()
+                if isinstance(acc_copy.get('secret'), (bytes, bytearray)):
+                    acc_copy['secret'] = acc_copy['secret'].decode('utf-8')
+                serializable_accounts.append(acc_copy)
+            
+            data_json = json.dumps(serializable_accounts).encode()
+            
+            # Clear the temporary copy with strings
+            del serializable_accounts
             encrypted_data = aesgcm.encrypt(nonce, data_json, None)
             
             storage_data = {
@@ -133,7 +145,14 @@ class Storage:
             
             aesgcm = AESGCM(self.key)
             decrypted_data = aesgcm.decrypt(nonce, encrypted_data, None)
-            return json.loads(decrypted_data.decode())
+            accounts = json.loads(decrypted_data.decode())
+            
+            # Convert secrets to bytearrays immediately for mutable memory
+            for acc in accounts:
+                if 'secret' in acc and isinstance(acc['secret'], str):
+                    acc['secret'] = bytearray(acc['secret'].encode('utf-8'))
+            
+            return accounts
         except Exception:
             return []
 

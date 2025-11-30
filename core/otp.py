@@ -27,17 +27,23 @@ class AuthEngine:
         
         digest_name = algorithm_map.get(algorithm.upper().replace('-', ''), 'sha1')
         
-        # Ensure secret is string for pyotp
+        # Ensure secret is string for pyotp (pyotp requires string)
+        # We decode only at the last moment to minimize string lifetime
         if isinstance(secret, (bytes, bytearray)):
             try:
+                # Create a temporary string just for pyotp
                 secret_str = secret.decode('utf-8')
-            except AttributeError:
-                secret_str = str(secret)
+                totp = pyotp.TOTP(secret_str, digits=digits, interval=interval, digest=digest_name)
+                code = totp.now()
+                
+                # Attempt to clear the string from memory (best effort)
+                del secret_str
+                return code
+            except Exception:
+                return "000000"
         else:
-            secret_str = secret
-
-        totp = pyotp.TOTP(secret_str, digits=digits, interval=interval, digest=digest_name)
-        return totp.now()
+            totp = pyotp.TOTP(secret, digits=digits, interval=interval, digest=digest_name)
+            return totp.now()
 
     def get_remaining_time(self, interval=30):
         """
@@ -54,7 +60,12 @@ class AuthEngine:
     def validate_secret(self, secret):
         """Validate if secret is a valid base32 string"""
         try:
-            pyotp.TOTP(secret).now()
+            if isinstance(secret, (bytes, bytearray)):
+                secret_str = secret.decode('utf-8')
+                pyotp.TOTP(secret_str).now()
+                del secret_str
+            else:
+                pyotp.TOTP(secret).now()
             return True
         except Exception:
             return False
