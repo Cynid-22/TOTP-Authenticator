@@ -30,11 +30,12 @@ Don't settle for defaults. Configure every aspect of your TOTP codes:
 - **Auto-Lock**: Configurable timeout with secure memory wiping.
 
 ## Download
-**No installation required!** Just download the latest version and run it.
+**No installation required!** Just download, extract, and run.
 
 1. Go to the [Releases](../../releases) page.
-2. Download `TOTP-Authenticator.exe`.
-3. Double-click to run.
+2. Download `TOTP-Authenticator-Windows.zip`.
+3. Extract the ZIP file to a folder of your choice.
+4. Run `TOTP-Authenticator.exe` from the extracted folder.
 
 ## Development
 
@@ -109,7 +110,7 @@ TOTP Authenticator implements security best practices in accordance with **OWASP
 
 To completely remove TOTP Authenticator from your system:
 
-1. Delete the `TOTP-Authenticator.exe` file.
+1. Delete the `TOTP-Authenticator` folder containing the executable and support files.
 2. **(Optional)** To permanently delete your encrypted account data, navigate to `%LOCALAPPDATA%\TOTP-Authenticator` and delete the `DO_NOT_DELETE_accounts.json` file.
    - **Note**: This file contains your encrypted 2FA secrets. Only delete it if you no longer need access to these accounts or have backed them up elsewhere.
 

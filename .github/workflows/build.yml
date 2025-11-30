@@ -28,8 +28,13 @@ jobs:
       run: |
         pyinstaller TOTP-Authenticator.spec
 
+    - name: Create distribution zip
+      run: |
+        cd dist
+        powershell Compress-Archive -Path TOTP-Authenticator -DestinationPath TOTP-Authenticator-Windows.zip
+
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: dist/TOTP-Authenticator.exe
+        files: dist/TOTP-Authenticator-Windows.zip
