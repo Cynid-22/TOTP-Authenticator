@@ -100,9 +100,12 @@ class AddAccountScreen:
             algorithm = "SHA1"
         
         # Create account with all settings
+        # Store secret as bytearray for mutable security
+        secret_bytes = bytearray(secret.encode('utf-8'))
+        
         account = {
             'name': name,
-            'secret': secret,
+            'secret': secret_bytes,
             'digits': digits,
             'interval': period,
             'algorithm': algorithm
@@ -110,4 +113,9 @@ class AddAccountScreen:
         
         self.app.accounts.append(account)
         self.app.storage.save_accounts(self.app.accounts, self.app.password)
+        
+        # Clear local string references
+        del secret
+        del name
+        
         self.app.show_main_screen()
